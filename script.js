@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('search-button');
     searchButton.addEventListener('click', searchRecipe);
-    
 });
 
-const apiKey = 'QEv97buItUcJnrHCe58zEQ==qyb4uvIa16MjkYLW';
-const unsplashAccessKey = 'C5tROdGkMFpugF5UOODbqMeGscF8uRF725IjyIO-hjY';
+// API keys should be stored securely, not hardcoded in the script
+const apiKey = process.env.API_NINJAS_KEY;
+const unsplashAccessKey = process.env.UNSPLASH_ACCESS_KEY;
 
 // Function to Fetch Recipe Data
 async function fetchRecipeData(query) {
@@ -45,37 +45,50 @@ async function fetchImage(query) {
     }
 }
 
+// Function to create a recipe card
+function createRecipeCard(recipe, imageUrl) {
+    const recipeDiv = document.createElement('div');
+    recipeDiv.className = 'recipe-card';
+    recipeDiv.innerHTML = `
+        <img src="${imageUrl}" alt="${recipe.title}">
+        <h3>${recipe.title}</h3>
+        <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
+        <p><strong>Servings:</strong> ${recipe.servings}</p>
+        <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+    `;
+    return recipeDiv;
+}
+
 // Main Function to Search and Display Recipes
-//pahila code yaha bata suru hunxa
 async function searchRecipe() {
-    document.querySelector('.loading-spinner').style.display = 'block';
-    console.log('Search button clicked'); // Debugging line
+    const loadingSpinner = document.querySelector('.loading-spinner');
+    loadingSpinner.style.display = 'block';
+
     const query = document.getElementById('search-input').value.trim();
     if (!query) {
         alert('Please enter a recipe name.');
+        loadingSpinner.style.display = 'none';
         return;
     }
+
     const resultsDiv = document.getElementById('recipe-container');
+    resultsDiv.innerHTML = ''; // Clear previous results
 
-    const recipes = await fetchRecipeData(query);
-    if (recipes.length === 0) {
-        resultsDiv.innerHTML = `<p>No recipes found for "${query}". Please try another search term.</p>`;
-        return;
-    }
-
-    for (const recipe of recipes) {
-        const imageUrl = await fetchImage(recipe.title);
-        const recipeDiv = document.createElement('div');
-        recipeDiv.className = 'recipe-card';
-        recipeDiv.innerHTML = `
-            <img src="${imageUrl}" alt="${recipe.title}">
-            <h3>${recipe.title}</h3>
-            <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
-            <p><strong>Servings:</strong> ${recipe.servings}</p>
-            <p><strong>Instructions:</strong> ${recipe.instructions}</p>
-        `;
-        resultsDiv.appendChild(recipeDiv);
-        document.querySelector('.loading-spinner').style.display = 'none';
-        break; // Display only the first recipe for simplicity
+    try {
+        const recipes = await fetchRecipeData(query);
+        if (recipes.length === 0) {
+            resultsDiv.innerHTML = `<p>No recipes found for "${query}". Please try another search term.</p>`;
+        } else {
+            // Display only the first recipe for simplicity
+            const recipe = recipes[0];
+            const imageUrl = await fetchImage(recipe.title);
+            const recipeCard = createRecipeCard(recipe, imageUrl);
+            resultsDiv.appendChild(recipeCard);
+        }
+    } catch (error) {
+        resultsDiv.innerHTML = `<p>Error fetching recipes. Please try again later.</p>`;
+        console.error('Error in searchRecipe:', error);
+    } finally {
+        loadingSpinner.style.display = 'none';
     }
 }
