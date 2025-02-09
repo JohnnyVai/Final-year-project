@@ -1,4 +1,4 @@
-/* General Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -128,6 +128,7 @@ nav {
     border: 2px solid #ddd;
     /* Add a border around each card */
     border-radius: 10px;
+    height: auto;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -143,7 +144,7 @@ nav {
 
 .recipe-card img {
     width: 100%;
-    height: 250px;
+    height: auto;
     /* Fixed height for consistency */
     object-fit: cover;
     border: 2px solid #ff6b6b;
@@ -156,6 +157,41 @@ nav {
 .recipe-card img:hover {
     transform: scale(1.1);
     /* Zoom effect on hover */
+}
+#learn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #3498db;
+    /* Blue background */
+    text-decoration: none;
+    /* Remove underline */
+    border-radius: 5px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+#learn:hover {
+    background-color: #2980b9;
+    /* Darker blue on hover */
+    transform: translateY(-3px);
+    /* Slight upward movement */
+}
+
+#learn:active {
+    background-color: #1c4d72;
+    /* Even darker on click */
+    transform: translateY(0);
+    /* Reset the movement */
+}
+
+#learn:focus {
+    outline: none;
+    /* Remove the focus outline */
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.6);
+    /* Add a glow effect */
 }
 
 .recipe-card h3 {
